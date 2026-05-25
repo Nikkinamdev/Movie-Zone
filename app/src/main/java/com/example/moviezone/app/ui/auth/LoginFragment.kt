@@ -76,7 +76,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
         viewModel.loginResult.observe(viewLifecycleOwner) { user ->
 
-           // hideLoader()
+            hideLoader()
 
             if (user != null) {
                 session.setLogin(true)

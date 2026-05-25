@@ -111,21 +111,32 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- RESET BUTTON -->
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/resetBtn"
+
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:layout_marginTop="24dp"
-                        android:background="@drawable/btn_shape"
-                        android:backgroundTint="@color/orange"
-                        android:text="RESET PASSWORD"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="24dp">
 
-                    <!-- BACK TO LOGIN -->
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/resetBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_shape"
+                            android:backgroundTint="@color/orange"
+                            android:text="RESET PASSWORD"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
                     <TextView
                         android:id="@+id/backToLogin"
                         android:layout_width="wrap_content"

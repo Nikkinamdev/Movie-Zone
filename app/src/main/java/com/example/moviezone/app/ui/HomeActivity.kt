@@ -22,7 +22,6 @@ class HomeActivity : AppCompatActivity() {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
-        // THIS enables click handling automatically
         bottomNav.setupWithNavController(navController)
     }
 }

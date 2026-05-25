@@ -23,9 +23,9 @@ class MovieDetailsViewModel(application: Application)
 
         repository.getMovieDetails(movieId, "ccbd7ce8cfbda28dc078738e87059d06") { result ->
 
-            if (result != null) {
-                _movieDetails.postValue(result)
-            } else {
+            result?.let {
+                _movieDetails.postValue(it)
+            } ?: run {
                 _error.postValue("Failed to load movie details")
             }
         }

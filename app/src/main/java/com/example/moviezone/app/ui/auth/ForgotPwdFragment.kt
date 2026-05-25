@@ -62,7 +62,8 @@ class ForgotPwdFragment : Fragment(R.layout.fragment_forgot_pwd) {
             }
 
             setValid(binding.emailLayout)
-
+            binding.progressBar.visibility = View.VISIBLE
+            binding.resetBtn.isEnabled = false
             lifecycleScope.launch {
 
                 val user = viewModel.checkEmail(email)
@@ -78,7 +79,8 @@ class ForgotPwdFragment : Fragment(R.layout.fragment_forgot_pwd) {
                     ).show()
 
                 } else {
-
+                    binding.progressBar.visibility = View.GONE
+                    binding.resetBtn.isEnabled = true
                     // ❌ EMAIL NOT FOUND
                     setInvalid(binding.emailLayout, "User not found")
                 }

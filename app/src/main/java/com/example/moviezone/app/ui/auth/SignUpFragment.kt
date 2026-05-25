@@ -81,7 +81,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
         viewModel.registerResult.observe(viewLifecycleOwner) { message ->
 
-            //hideLoader()
+            hideLoader()
 
             when (message) {
 
