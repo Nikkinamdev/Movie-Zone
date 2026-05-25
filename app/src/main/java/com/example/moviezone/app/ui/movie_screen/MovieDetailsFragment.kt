@@ -78,15 +78,15 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
             progressBar.visibility = View.GONE
 
-            title.text = movie.title
-            tagline.text = movie.tagline
-            overview.text = movie.overview
-            rating.text = "⭐ ${(movie.vote_average * 100).toInt() / 100.0}"
-            runtime.text = "${movie.runtime} min"
-            releaseDate.text = movie.release_date
+            title.text = movie?.title
+            tagline.text = movie?.tagline
+            overview.text = movie?.overview
+            rating.text = "⭐ ${(movie?.vote_average?.times(100))?.toInt()?.div(100.0)}"
+            runtime.text = "${movie?.runtime} min"
+            releaseDate.text = movie?.release_date
 
             Glide.with(requireContext())
-                .load("https://image.tmdb.org/t/p/w500${movie.poster_path}")
+                .load("https://image.tmdb.org/t/p/w500${movie?.poster_path}")
                 .into(poster)
 
 

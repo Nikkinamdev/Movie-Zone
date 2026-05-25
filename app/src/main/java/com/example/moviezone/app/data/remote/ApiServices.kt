@@ -2,6 +2,7 @@ package com.example.moviezone.app.data.remote
 
 import com.example.moviezone.app.data.model.MovieDetails
 import com.example.moviezone.app.data.model.MoviesResponse
+
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -11,14 +12,14 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("discover/movie")
-    fun getDiscoverMovies(
+    suspend fun getDiscoverMovies(
         @Query("api_key") apiKey: String,
         @Query("page") page: Int = 1
-    ): Call<MoviesResponse>
+    ): MoviesResponse
     @GET("movie/{movie_id}")
-    fun getMoviesDetails(
+   suspend fun getMoviesDetails(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String
 
-    ): Call<MovieDetails>
+    ): MovieDetails
 }

@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.example.moviezone.MainActivity
 import com.example.moviezone.R
 import com.example.moviezone.app.viewmodel.HomeViewModel
@@ -88,9 +89,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 tvName.text = user.name
                 tvEmail.text = user.email
 
-                // ✅ LOAD IMAGE FROM DB
+                // ✅ SAFE IMAGE LOAD (FIXED CRASH)
                 if (!user.profileImageUri.isNullOrEmpty()) {
-                    imageView.setImageURI(Uri.parse(user.profileImageUri))
+
+                    val uri = Uri.parse(user.profileImageUri)
+
+                    Glide.with(this)
+                        .load(uri)
+                        .placeholder(R.drawable.ic_user)
+                        .circleCrop()
+                        .into(imageView)
+
                 } else {
                     imageView.setImageResource(R.drawable.ic_user)
                 }
@@ -114,45 +123,50 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .show()
     }
 
-
+    // ================= GALLERY =================
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
 
             if (uri != null) {
+
                 imageView.setImageURI(uri)
 
-                // SAVE TO DB
                 viewModel.saveProfileImage(uri.toString())
             }
         }
 
-
+    // ================= CAMERA =================
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
 
             if (bitmap != null) {
 
-                imageView.setImageBitmap(bitmap)
+                // ✅ SHOW IMMEDIATELY (FIX)
+                Glide.with(this)
+                    .load(bitmap)
+                    .circleCrop()
+                    .into(imageView)
 
+                // SAVE LOCALLY
                 val uri = saveBitmapToInternalStorage(bitmap)
+
+                // SAVE TO DB
                 viewModel.saveProfileImage(uri.toString())
             }
         }
-
     private fun saveBitmapToInternalStorage(bitmap: Bitmap): Uri {
 
         val file = File(
             requireContext().filesDir,
-            "profile_${System.currentTimeMillis()}.png"
+            "profile_${System.currentTimeMillis()}.jpg"
         )
 
         file.outputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it)
         }
 
         return Uri.fromFile(file)
     }
-
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
 

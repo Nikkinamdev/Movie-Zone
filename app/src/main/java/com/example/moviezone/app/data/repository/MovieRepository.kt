@@ -5,48 +5,25 @@ import androidx.lifecycle.LiveData
 import com.example.moviezone.app.data.local.FavoriteMovie
 import com.example.moviezone.app.data.local.MovieDao
 import com.example.moviezone.app.data.model.Movies
-import com.example.moviezone.app.data.model.MoviesResponse
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.moviezone.app.data.model.MoviesResponse
+import retrofit2.awaitResponse
 
 class MovieRepository(
     private val dao: MovieDao
 ) {
 
-    fun getMovies(apiKey: String, callback: (List<Movies>) -> Unit) {
+    suspend fun getMovies(apiKey: String): List<Movies> {
 
         Log.d("API_DEBUG", "API CALL STARTED")
 
-        RetrofitClient.api.getDiscoverMovies(apiKey)
-            .enqueue(object : Callback<MoviesResponse> {
+        val response = RetrofitClient.api.getDiscoverMovies(apiKey,1)
 
-                override fun onResponse(
-                    call: Call<MoviesResponse>,
-                    response: Response<MoviesResponse>
-                ) {
-                    Log.e("API_CODE", response.code().toString())
+        val moviesList = response.results
 
-                    if (response.isSuccessful && response.body() != null) {
-                        Log.e("Api response", response.body().toString())
-                        val moviesList = response.body()!!.results
-                        Log.d("API_SUCCESS", "size = ${moviesList.size}")
+        Log.d("API_SUCCESS", "size = ${moviesList.size}")
 
-                        callback(moviesList)
-
-                    } else {
-
-                        Log.e("API_ERROR", response.errorBody()?.string().toString())
-                        callback(emptyList())
-                    }
-                }
-
-                override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                    Log.e("API_DEBUG", "FAILURE = ${t.message}")
-                    callback(emptyList())
-                }
-            })
+        return moviesList
     }
 
     suspend fun saveFavorite(movie: FavoriteMovie) {

@@ -13,20 +13,26 @@ class MovieDetailsViewModel(application: Application)
 
     private val repository = MovieDetailsRepository()
 
-    private val _movieDetails = MutableLiveData<MovieDetails>()
-    val movieDetails: LiveData<MovieDetails> = _movieDetails
+    private val _movieDetails = MutableLiveData<MovieDetails?>()
+    val movieDetails: LiveData<MovieDetails?> = _movieDetails
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
     fun fetchMovie(movieId: Int) {
 
-        repository.getMovieDetails(movieId, "ccbd7ce8cfbda28dc078738e87059d06") { result ->
+        viewModelScope.launch {
 
-            result?.let {
-                _movieDetails.postValue(it)
-            } ?: run {
-                _error.postValue("Failed to load movie details")
+            repository.getMovieDetails(
+                movieId,
+                "ccbd7ce8cfbda28dc078738e87059d06"
+            ).collect { result ->
+
+                if (result != null) {
+                    _movieDetails.value = result
+                } else {
+                    _error.value = "Failed to load movie details"
+                }
             }
         }
     }

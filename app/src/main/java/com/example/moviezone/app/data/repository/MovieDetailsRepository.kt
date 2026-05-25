@@ -2,56 +2,32 @@ package com.example.moviezone.app.data.repository
 
 import android.util.Log
 import com.example.moviezone.app.data.model.MovieDetails
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 
 class MovieDetailsRepository {
 
     fun getMovieDetails(
         movieId: Int,
-        apiKey: String,
-        callback: (MovieDetails?) -> Unit
-    ) {
+        apiKey: String
+    ): Flow<MovieDetails?> = flow {
 
-        Log.d("DETAIL_API", "API CALL STARTED")
+        try {
 
-        RetrofitClient.api.getMoviesDetails(movieId, apiKey)
-            .enqueue(object : Callback<MovieDetails> {
+            Log.d("DETAIL_API", "API CALL STARTED")
 
-                override fun onResponse(
-                    call: Call<MovieDetails>,
-                    response: Response<MovieDetails>
-                ) {
+            val response = RetrofitClient.api.getMoviesDetails(movieId, apiKey)
 
-                    Log.e("DETAIL_CODE", response.code().toString())
+            Log.d("DETAIL_SUCCESS", response.toString())
 
-                    if (response.isSuccessful && response.body() != null) {
+            emit(response)
 
-                        Log.d("DETAIL_SUCCESS", response.body().toString())
+        } catch (e: Exception) {
 
-                        callback(response.body())
+            Log.e("DETAIL_ERROR", e.message.toString())
 
-                    } else {
-
-                        Log.e(
-                            "DETAIL_ERROR",
-                            response.errorBody()?.string().toString()
-                        )
-
-                        callback(null)
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<MovieDetails>,
-                    t: Throwable
-                ) {
-
-                    Log.e("DETAIL_FAILURE", t.message.toString())
-
-                    callback(null)
-                }
-            })
+            emit(null)
+        }
     }
 }

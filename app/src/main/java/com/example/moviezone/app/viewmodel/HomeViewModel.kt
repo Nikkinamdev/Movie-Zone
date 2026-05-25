@@ -33,17 +33,28 @@ class HomeViewModel(application: Application)
 
     fun loadMovies() {
 
-        isLoading.value = true
+        viewModelScope.launch {
 
-        repository.getMovies(
-            "ccbd7ce8cfbda28dc078738e87059d06"
-        ) { list ->
+            isLoading.value = true
 
-            isLoading.value = false
+            try {
 
-            Log.d("VM_DEBUG", "Received size: ${list.size}")
+                val list = repository.getMovies(
+                    "ccbd7ce8cfbda28dc078738e87059d06"
+                )
 
-            movies.postValue(list)   // 🔥 IMPORTANT FIX
+                movies.value = list
+
+            } catch (e: Exception) {
+
+                Log.e("ERROR", e.message.toString())
+
+                movies.value = emptyList()
+
+            } finally {
+
+                isLoading.value = false
+            }
         }
     }
 
